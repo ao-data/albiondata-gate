@@ -50,7 +50,6 @@ class AODGate < Sinatra::Base
     wanted = $POWS[params[:key]]
     halt(902, "Pow not handed") unless wanted # This pow was never requested
     halt(903, "Pow not solved correctly") unless Digest::SHA2.hexdigest("aod^" + params[:solution] + "^" + params[:key]).unpack("B*")[0].start_with?(wanted)
-    p params[:key]
     $POWS_SOLVED << params[:key]
     $POWS.delete(params[:key])
     halt(200, "OK")
@@ -63,7 +62,6 @@ class AODGate < Sinatra::Base
     rescue
       halt(901, "Invalid JSON data")
     end
-    p params.inspect
     halt(904, "Pow not solved") unless $POWS_SOLVED.include?(params["pow"])
     NATSForwarder.forward([params[:topic]], data)
     $POWS_SOLVED.delete(params["pow"])
