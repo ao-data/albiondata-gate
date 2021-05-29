@@ -2,8 +2,9 @@
 require 'logger'
 require 'pry'
 require 'sinatra'
+require 'securerandom'
+require 'digest/sha2'
 require 'rack/throttle'
-
 
 STDOUT.sync = true
 LOGGER = Logger.new(STDOUT)
@@ -12,6 +13,9 @@ require_relative 'config'
 require_relative 'lib/nats'
 
 NATSForwarder.start
+
+$POWS = {}
+$POWS_SOLVED = []
 
 class AODGate < Sinatra::Base
   configure do
@@ -29,15 +33,43 @@ class AODGate < Sinatra::Base
   before do
   end
 
-  post '/:topic' do
+  get '/pow' do
+    challange = { wanted: SecureRandom.hex(POW_RANDOMNESS).unpack("B*")[0][0..POW_DIFFICULITY-1], key: SecureRandom.hex(POW_RANDOMNESS) }
+    $POWS[challange[:key]] = challange[:wanted]
+
+    #Limit the amount of pows to keep
+    #Delete the oldest handed until threshold is reached
+    until $POWS.count <= POW_KEEP
+      $POWS.delete($POWS.first[0])
+    end
+
+    return challange.to_json
+  end
+
+  post '/pow' do
+    wanted = $POWS[params[:key]]
+    halt(902, "Pow not handed") unless wanted # This pow was never requested
+    halt(903, "Pow not solved correctly") unless Digest::SHA2.hexdigest("aod^" + params[:solution] + "^" + params[:key]).unpack("B*")[0].start_with?(wanted)
+    p params[:key]
+    $POWS_SOLVED << params[:key]
+    $POWS.delete(params[:key])
+    halt(200, "OK")
+  end
+
+  post '/:topic/:pow' do
     halt 404 unless TOPICS.include?(params[:topic])
     begin
       data = JSON.parse(request.body.read)
     rescue
       halt(901, "Invalid JSON data")
     end
+    p params.inspect
+    halt(904, "Pow not solved") unless $POWS_SOLVED.include?(params["pow"])
     NATSForwarder.forward([params[:topic]], data)
+    $POWS_SOLVED.delete(params["pow"])
+    halt(200, "OK")
   end
+  
 end
 
 LOGGER.info("Starting server...")
