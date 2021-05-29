@@ -36,7 +36,7 @@ class AODGate < Sinatra::Base
     rescue
       halt(901, "Invalid JSON data")
     end
-    NATSForwarder.q[params[:topic]] << data
+    NATSForwarder.forward([params[:topic]], data)
   end
 end
 
