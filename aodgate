@@ -1,0 +1,49 @@
+#!/usr/bin/env ruby
+require 'logger'
+require 'pry'
+require 'sinatra'
+require 'rack/throttle'
+
+
+STDOUT.sync = true
+LOGGER = Logger.new(STDOUT)
+
+require_relative 'config'
+require_relative 'lib/nats'
+
+NATSForwarder.start
+
+class AODGate < Sinatra::Base
+  configure do
+    set :sessions, false
+    set :logging, true
+    set :show_exceptions, true
+    set :run, false
+    set bind: "0.0.0.0"
+    set port: 4223
+    set server: "puma"
+  end
+
+  use Rack::Throttle::Daily, :max => REQUEST_LIMIT_PER_DAY
+  
+  before do
+  end
+
+  post '/:topic' do
+    halt 404 unless TOPICS.include?(params[:topic])
+    begin
+      data = JSON.parse(request.body.read)
+    rescue
+      halt(901, "Invalid JSON data")
+    end
+    NATSForwarder.q[params[:topic]] << data
+  end
+end
+
+LOGGER.info("Starting server...")
+unless $0 == "pry"
+  AODGate.run!
+  exit 0
+else
+  binding.pry
+end
