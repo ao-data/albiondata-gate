@@ -9,7 +9,12 @@ require 'rack/throttle'
 STDOUT.sync = true
 LOGGER = Logger.new(STDOUT)
 
-require_relative 'config'
+if File.exist?(__dir__ + "/config.local.rb")
+  require_relative 'config.local'
+else
+  require_relative 'config'
+end
+
 require_relative 'lib/nats'
 require_relative 'lib/pow-cache'
 

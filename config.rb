@@ -1,10 +1,15 @@
 TOPICS = %w(goldprices.ingest marketorders.ingest markethistories.ingest mapdata.ingest)
 #NATS_URI = "nats://public:thenewalbiondata@www.albion-online-data.com:4222"
 NATS_URI = "nats://localhost:4222"
+
+# Each ingestion takes 3 REQUEST
+# get pow
+# submit pow
+# ingest
 REQUEST_LIMIT = {
-  per_day: 10_000,
-  per_hour: 2_500,
-  per_minute: 120,
+  per_day: 10_000 * 3,
+  per_hour: 1_000 * 3,
+  per_minute: 90 * 3,
 }
 
 # Number of handed pows to remember (prevents out of memory)
@@ -12,7 +17,7 @@ POW_KEEP = 1_000
 
 # Higher difficulity will take the client more time to solve
 # Benchmark: https://docs.google.com/spreadsheets/d/1aongAIvJs0idA9ABk_saGIyeyvZJL9glxf1vsaCO5MY/edit?usp=sharing
-POW_DIFFICULITY=38
+POW_DIFFICULITY=39
 
 # Higher randomness will make it harder to store all possible combinations
 # If it is to low the pows can be pre-solved, stored and lookedup as needed
