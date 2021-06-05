@@ -12,9 +12,6 @@ REQUEST_LIMIT = {
   per_minute: 90 * 3,
 }
 
-# Number of handed pows to remember (prevents out of memory)
-POW_KEEP = 1_000
-
 # Higher difficulity will take the client more time to solve
 # Benchmark: https://docs.google.com/spreadsheets/d/1aongAIvJs0idA9ABk_saGIyeyvZJL9glxf1vsaCO5MY/edit?usp=sharing
 POW_DIFFICULITY=39
