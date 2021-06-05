@@ -1,2 +1,2 @@
 #!/bin/sh
-/usr/local/bin/puma -p 4223 -e production -t 0:32 -w `nproc`
+/usr/local/bin/puma -p 4223 -e production -t 0:32
