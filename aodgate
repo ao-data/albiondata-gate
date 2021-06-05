@@ -54,7 +54,7 @@ class AODGate < Sinatra::Base
 
   post '/:topic/:pow' do
     halt 404 unless TOPICS.include?(params[:topic])
-    pow = $POWS[params[:key]]
+    pow = $POWS[params[:pow]]
     halt(904, "Pow not solved") unless pow && pow[:solved]
     begin
       data = JSON.parse(request.body.read)
