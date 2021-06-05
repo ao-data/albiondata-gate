@@ -31,9 +31,9 @@ class AODGate < Sinatra::Base
     set server: "puma"
   end
 
-#  use Rack::Throttle::Minute, :max => REQUEST_LIMIT[:per_minute]
-#  use Rack::Throttle::Hourly, :max => REQUEST_LIMIT[:per_hour]
-#  use Rack::Throttle::Daily, :max => REQUEST_LIMIT[:per_day]
+  use Rack::Throttle::Minute, :max => REQUEST_LIMIT[:per_minute]
+  use Rack::Throttle::Hourly, :max => REQUEST_LIMIT[:per_hour]
+  use Rack::Throttle::Daily, :max => REQUEST_LIMIT[:per_day]
   
   before do
   end
