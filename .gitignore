@@ -58,3 +58,7 @@ build-iPhoneSimulator/
 #emacs swap files
 *~
 \#*\#
+
+#project specific
+*.pstore
+config.local.rb
