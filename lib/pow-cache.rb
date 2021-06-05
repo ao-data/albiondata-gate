@@ -1,19 +1,19 @@
 $POWS = {}
-$POWS_SOLVED = []
+$POW_MUTEX = Mutex.new
 
 #Limit the amount of pows to keep
 #Delete the oldest handed until threshold is reached
 Thread.new do
-  Thread.current.priority = -3 
+  Thread.current.priority = -3
   loop do
     begin
-      if ($POWS.count - POW_KEEP) > 0
-        $POWS.delete(*$POWS.keys.first($POWS.count - POW_KEEP))
+      overshoot = $POWS.count - POW_KEEP
+      if (overshoot) > 0
+        $POW_MUTEX.synchronize do
+          $POWS.keys.first(overshoot).each { |k| $POWS.delete(k) }
+        end
       end
-
-      if ($POWS_SOLVED.count - POW_KEEP) > 0
-        $POWS_SOLVED.shift(($POWS_SOLVED.count - POW_KEEP))
-      end
+      GC.start
     ensure
       sleep 120
     end

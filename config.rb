@@ -13,7 +13,7 @@ REQUEST_LIMIT = {
 }
 
 # Number of handed pows to remember (prevents out of memory)
-POW_KEEP = 1_000
+POW_KEEP = 10_000
 
 # Higher difficulity will take the client more time to solve
 # Benchmark: https://docs.google.com/spreadsheets/d/1aongAIvJs0idA9ABk_saGIyeyvZJL9glxf1vsaCO5MY/edit?usp=sharing
