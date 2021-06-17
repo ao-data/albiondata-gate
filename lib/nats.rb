@@ -6,12 +6,12 @@ class NATSForwarder
 
   
   def self.start
-    @@nats.connect(NATS_URI, {verbose: true})
+    @@nats.connect(NATS_URI, {verbose: true}) if ENV['ENABLE_NATS'] == "1"
   end
 
 
   def self.forward(topic, msg)
-    @@nats.publish(topic, msg.to_json)
+    @@nats.publish(topic, msg.to_json) if ENV['ENABLE_NATS'] == "1"
   end
 
 end
