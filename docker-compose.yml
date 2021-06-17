@@ -1,0 +1,17 @@
+version: "3"
+services:
+  albiondata-dgate:
+    build:
+      context: .
+    environment:
+      ENABLE_NATS: 0
+      NATS_URI: nats://localhost:4222
+      POW_DIFFICULITY: 39
+      POW_PORT: 4223
+    ports:
+      - 4223:4223
+
+    # keep the following lines, useful for debugging/development
+    # volumes:
+    #   - ./:/usr/src/app
+    # entrypoint: 'sleep 999'

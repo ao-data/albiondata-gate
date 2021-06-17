@@ -27,7 +27,7 @@ class AODGate < Sinatra::Base
     set :show_exceptions, true
     set :run, false
     set bind: "0.0.0.0"
-    set port: 4223
+    set port: ENV['POW_PORT']
     set server: "puma"
   end
 
