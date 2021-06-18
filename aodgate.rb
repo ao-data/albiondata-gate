@@ -40,7 +40,7 @@ class AODGate < Sinatra::Base
 
   get '/pow' do
     challange = { wanted: SecureRandom.hex(POW_RANDOMNESS).unpack("B*")[0][0..POW_DIFFICULITY-1], key: SecureRandom.hex(POW_RANDOMNESS) }
-    $POW_MUTEX.synchronize { $POWS[challange[:key]] = {wanted: challange[:wanted], solved: false} }
+    $POW_MUTEX.synchronize { $POWS[challange[:key]] = {wanted: challange[:wanted]} }
     return challange.to_json
   end
 
