@@ -20,7 +20,7 @@ POW_DIFFICULITY =  ENV['POW_DIFFICULITY'].nil? ? 39 : ENV['POW_DIFFICULITY'].to_
 
 # Limits the size of a nats payload
 # 32768 should be large enough for any corrctly functioning client
-NATS_PAYLOAD_MAX =  ENV['POW_DIFFICULITY'].nil? ? 32768 : ENV['POW_DIFFICULITY'].to_i
+NATS_PAYLOAD_MAX =  ENV['NATS_PAYLOAD_MAX'].nil? ? 32768 : ENV['NATS_PAYLOAD_MAX'].to_i
 
 # Higher randomness will make it harder to store all possible combinations
 # If it is to low the pows can be pre-solved, stored and lookedup as needed
