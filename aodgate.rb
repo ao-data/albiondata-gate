@@ -44,26 +44,21 @@ class AODGate < Sinatra::Base
     return challange.to_json
   end
 
-  post '/pow' do
+  post '/pow/:topic' do
+    halt 404 unless TOPICS.include?(params[:topic])
     pow = $POWS[params[:key]]
     halt(902, "Pow not handed") unless pow # This pow was never requested
     halt(903, "Pow not solved correctly") unless Digest::SHA2.hexdigest("aod^" + params[:solution] + "^" + params[:key]).unpack("B*")[0].start_with?(pow[:wanted])
-    $POW_MUTEX.synchronize { pow[:solved] = true }
-    halt(200, "OK")
-  end
 
-  post '/:topic/:pow' do
-    halt 404 unless TOPICS.include?(params[:topic])
-    pow = $POWS[params[:pow]]
-    halt(904, "Pow not solved") unless pow && pow[:solved]
     begin
-      data = JSON.parse(request.body.read)
+      data = JSON.parse(params[:natsmsg])
     rescue
       halt(901, "Invalid JSON data")
     end
     NATSForwarder.forward([params[:topic]], data)
-    $POW_MUTEX.synchronize { $POWS.delete(params["pow"]) }
+    $POW_MUTEX.synchronize { $POWS.delete(params[:key]) }
     halt(200, "OK")
+
   end
 end
 
