@@ -16,7 +16,7 @@ POW_KEEP = 10_000
 
 # Higher difficulity will take the client more time to solve
 # Benchmark: https://docs.google.com/spreadsheets/d/1aongAIvJs0idA9ABk_saGIyeyvZJL9glxf1vsaCO5MY/edit?usp=sharing
-POW_DIFFICULITY=ENV['POW_DIFFICULITY'].to_i ||= 39
+POW_DIFFICULITY =  ENV['POW_DIFFICULITY'].nil? ? 39 : ENV['POW_DIFFICULITY'].to_i
 
 # Higher randomness will make it harder to store all possible combinations
 # If it is to low the pows can be pre-solved, stored and lookedup as needed
