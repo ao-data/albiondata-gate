@@ -18,6 +18,10 @@ POW_KEEP = 10_000
 # Benchmark: https://docs.google.com/spreadsheets/d/1aongAIvJs0idA9ABk_saGIyeyvZJL9glxf1vsaCO5MY/edit?usp=sharing
 POW_DIFFICULITY =  ENV['POW_DIFFICULITY'].nil? ? 39 : ENV['POW_DIFFICULITY'].to_i
 
+# Limits the size of a nats payload
+# 32768 should be large enough for any corrctly functioning client
+NATS_PAYLOAD_MAX =  ENV['POW_DIFFICULITY'].nil? ? 32768 : ENV['POW_DIFFICULITY'].to_i
+
 # Higher randomness will make it harder to store all possible combinations
 # If it is to low the pows can be pre-solved, stored and lookedup as needed
 # Formular for possible combinations: (POW_RANDOMNESS^16)*(POW_DIFFICULITY^2)
