@@ -55,7 +55,7 @@ class AODGate < Sinatra::Base
     rescue
       halt(901, "Invalid JSON data")
     end
-    NATSForwarder.forward([params[:topic]], data)
+    NATSForwarder.forward(params[:topic], data)
     $POW_MUTEX.synchronize { $POWS.delete(params[:key]) }
     halt(200, "OK")
 
