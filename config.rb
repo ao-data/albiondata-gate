@@ -1,6 +1,5 @@
 TOPICS = %w(goldprices.ingest marketorders.ingest markethistories.ingest mapdata.ingest)
-#NATS_URI = "nats://public:thenewalbiondata@www.albion-online-data.com:4222"
-NATS_URI = "nats://localhost:4222"
+NATS_URI = ENV['NATS_URI']
 
 # Each ingestion takes 3 REQUEST
 # get pow
@@ -17,7 +16,7 @@ POW_KEEP = 10_000
 
 # Higher difficulity will take the client more time to solve
 # Benchmark: https://docs.google.com/spreadsheets/d/1aongAIvJs0idA9ABk_saGIyeyvZJL9glxf1vsaCO5MY/edit?usp=sharing
-POW_DIFFICULITY=39
+POW_DIFFICULITY=ENV['POW_DIFFICULITY']
 
 # Higher randomness will make it harder to store all possible combinations
 # If it is to low the pows can be pre-solved, stored and lookedup as needed
