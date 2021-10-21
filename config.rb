@@ -1,14 +1,13 @@
 TOPICS = %w(goldprices.ingest marketorders.ingest markethistories.ingest mapdata.ingest)
 NATS_URI = ENV['NATS_URI']
 
-# Each ingestion takes 3 REQUEST
+# Each ingestion takes 2 REQUEST
 # get pow
-# submit pow
-# ingest
+# submit pow & ingestion
 REQUEST_LIMIT = {
-  per_day: 10_000 * 3,
-  per_hour: 1_000 * 3,
-  per_minute: 90 * 3,
+  per_day: 10_000 * 2,
+  per_hour: 1_000 * 2,
+  per_minute: 90 * 2,
 }
 
 # Number of handed pows to remember (prevents out of memory)
