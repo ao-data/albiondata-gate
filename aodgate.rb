@@ -79,7 +79,7 @@ class AODGate < Sinatra::Base
     if params[:topic] == "markethistories.ingest"
       failed = false
 
-      failed = true if data['Timescale'] == 0 && data['MarketHistories'].count > 24
+      failed = true if data['Timescale'] == 0 && data['MarketHistories'].count > 25
       failed = true if data['Timescale'] == 1 && data['MarketHistories'].count > 29
       failed = true if data['Timescale'] == 2 && data['MarketHistories'].count > 113
 
