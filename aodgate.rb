@@ -49,6 +49,7 @@ class AODGate < Sinatra::Base
     pow = $POWS[params[:key]]
     halt(902, "Pow not handed") unless pow # This pow was never requested
     halt(903, "Pow not solved correctly") unless Digest::SHA2.hexdigest("aod^" + params[:solution] + "^" + params[:key]).unpack("B*")[0].start_with?(pow[:wanted])
+    halt(904, "Payload too large") unless params[:natsmsg].bytesize <= NATS_PAYLOAD_MAX
 
     begin
       data = JSON.parse(params[:natsmsg])
