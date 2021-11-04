@@ -56,6 +56,16 @@ class AODGate < Sinatra::Base
     rescue
       halt(901, "Invalid JSON data")
     end
+
+    halt(904, "Too much data") if params[:topic] == "marketorders.ingest" and data['Orders'].count > 50
+    halt(904, "Too much data") if params[:topic] == "goldprices.ingest" && data['Prices'].count > 673
+
+    if params[:topic] == "markethistories.ingest"
+      halt(904, "Too much data") if data['Timescale'] == 0 && data['MarketHistories'].count > 24
+      halt(904, "Too much data") if data['Timescale'] == 1 && data['MarketHistories'].count > 29
+      halt(904, "Too much data") if data['Timescale'] == 2 && data['MarketHistories'].count > 113
+    end
+
     NATSForwarder.forward(params[:topic], data)
     $POW_MUTEX.synchronize { $POWS.delete(params[:key]) }
     halt(200, "OK")
