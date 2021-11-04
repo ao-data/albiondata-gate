@@ -6,12 +6,22 @@ services:
     environment:
       ENABLE_NATS: 0
       NATS_URI: nats://localhost:4222
-      POW_DIFFICULITY: 39
+      POW_DIFFICULITY: 10
       POW_PORT: 4223
+      POW_EXPIRE_SECONDS: 10
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_DB: 2
     ports:
       - 4223:4223
-
-    # keep the following lines, useful for debugging/development
+    # # keep the following lines, useful for debugging/development
     # volumes:
     #   - ./:/usr/src/app
     # entrypoint: 'sleep 999'
+  redis:
+    image: redis
+    ports:
+      - 6379:6379
+    volumes:
+      - ./redisdata:/data
+    command: redis-server
