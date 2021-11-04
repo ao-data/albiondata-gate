@@ -78,3 +78,7 @@ run_test(true, false, false, true)
 # big goldprices
 puts "*Expect 904"
 run_test(true, false, true)
+
+#############################################
+# THIS REALLY NEEDS TO BE RSPEC!!!!!!!!!!!! #
+#############################################
