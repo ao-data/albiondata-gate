@@ -41,6 +41,12 @@ class AODGate < Sinatra::Base
   use Rack::Throttle::Hourly, :max => REQUEST_LIMIT[:per_hour]
   use Rack::Throttle::Daily, :max => REQUEST_LIMIT[:per_day]
 
+  helpers do
+    def halt_log(code, short, long)
+      LOGGER.warn(request.ip) { "Error #{code}: " + long }
+      halt(code, short)
+    end
+  end
   before do
   end
 
@@ -67,13 +73,11 @@ class AODGate < Sinatra::Base
     end
 
     if params[:topic] == "marketorders.ingest" && data['Orders'].count > 50
-      LOGGER.warn("Error 904, Too Much Data. ip: #{request.ip}, topic: marketorders.ingest, order count: #{data['Orders'].count}")
-      halt(904, "Too much data")
+      halt_log(904, "Too much data", "topic: marketorders.ingest, order count: #{data['Orders'].count}")
     end
 
     if params[:topic] == "goldprices.ingest" && data['Prices'].count > 673
-      LOGGER.warn("Error 904, Too Much Data. ip: #{request.ip}, topic: goldprices.ingest, order count: #{data['Prices'].count}")
-      halt(904, "Too much data")
+      halt_log(904, "Too much data", "topic: goldprices.ingest, order count: #{data['Prices'].count}")
     end
 
     if params[:topic] == "markethistories.ingest"
@@ -86,8 +90,7 @@ class AODGate < Sinatra::Base
       end
 
       if failed
-        LOGGER.warn("Error 904, Too Much Data. ip: #{request.ip}, topic: markethistories.ingest, Timescale: #{data['Timescale']}, MarketHistories count: #{data['MarketHistories'].count}")
-        halt(904, "Too much data")
+        halt_log(904, "Too much data", "topic: markethistories.ingest, Timescale: #{data['Timescale']}, MarketHistories count: #{data['MarketHistories'].count}")
       end
     end
 
