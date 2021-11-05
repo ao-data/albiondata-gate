@@ -18,6 +18,7 @@ GEM
     rack-throttle (0.7.0)
       bundler (>= 1.0.0)
       rack (>= 1.0.0)
+    redis (4.5.1)
     ruby2_keywords (0.0.4)
     sinatra (2.1.0)
       mustermann (~> 1.0)
@@ -35,7 +36,8 @@ DEPENDENCIES
   puma
   rack-protection
   rack-throttle
+  redis
   sinatra
 
 BUNDLED WITH
-   2.2.5
+   2.2.30
