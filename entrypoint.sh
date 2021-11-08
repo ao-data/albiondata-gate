@@ -1,3 +1,3 @@
 #!/bin/bash
 
-bundle exec puma -p 4223 -e production -t 0:32
+bundle exec puma -p 4223 -e production -w 2 -t 8:32
