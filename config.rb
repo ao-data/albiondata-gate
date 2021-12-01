@@ -5,9 +5,9 @@ NATS_URI = ENV['NATS_URI']
 # get pow
 # submit pow & ingestion
 REQUEST_LIMIT = {
-  per_day: 10_000 * 2,
-  per_hour: 1_000 * 2,
-  per_minute: 90 * 2,
+  per_day: 30_000 * 2,
+  per_hour: 3_000 * 2,
+  per_minute: 270 * 2,
 }
 
 # Number of handed pows to remember (prevents out of memory)
