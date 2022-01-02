@@ -77,14 +77,15 @@ class AODGate < Sinatra::Base
     end
 
     if params[:topic] == "markethistories.ingest"
-      failed = false
 
-      failed = true if data['Timescale'] == 0 && data['MarketHistories'].count > 25
-      failed = true if data['Timescale'] == 1 && data['MarketHistories'].count > 29
-      failed = true if data['Timescale'] == 2 && data['MarketHistories'].count > 113
+      case
+      when data['Timescale'] == 0 && data['MarketHistories'].count > 25 then failed = true
+      when data['Timescale'] == 1 && data['MarketHistories'].count > 29 then failed = true
+      when data['Timescale'] == 2 && data['MarketHistories'].count > 113 then failed = true
+      else failed = false
+      end
 
-
-      if failed == true
+      if failed
         LOGGER.warn("Error 904, Too Much Data. ip: #{request.ip}, topic: markethistories.ingest, Timescale: #{data['Timescale']}, MarketHistories count: #{data['MarketHistories'].count}")
         halt(904, "Too much data")
       end
