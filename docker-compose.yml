@@ -3,6 +3,8 @@ services:
   albiondata-dgate:
     build:
       context: .
+    volumes:
+      - ./:/usr/src/app
     environment:
       ENABLE_NATS: 0
       NATS_URI: nats://localhost:4222
@@ -12,6 +14,7 @@ services:
       REDIS_HOST: redis
       REDIS_PORT: 6379
       REDIS_DB: 2
+      DEBUG: true
     ports:
       - 4223:4223
     # # keep the following lines, useful for debugging/development
