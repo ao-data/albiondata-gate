@@ -91,6 +91,8 @@ class AODGate < Sinatra::Base
     end
 
     NATSForwarder.forward(params[:topic], data)
+    puts ENV['DEBUG']
+    puts params.merge({request_ip: request.ip}).to_json if ENV['DEBUG'] == "true"
     $POW_MUTEX.synchronize { $POWS.delete(params[:key]) }
     halt(200, "OK")
   end
