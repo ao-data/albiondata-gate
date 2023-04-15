@@ -25,7 +25,7 @@ class AODGate < Sinatra::Base
   configure do
     set :sessions, false
     set :logging, true
-    set :show_exceptions, true
+    set :show_exceptions, false
     set :run, false
     set bind: "0.0.0.0"
     set port: ENV['POW_PORT']
