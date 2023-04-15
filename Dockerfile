@@ -1,4 +1,4 @@
-FROM ruby:2.6.2
+FROM ruby:3.2.1
 
 WORKDIR /usr/src/app
 RUN gem install bundler

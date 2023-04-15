@@ -1,6 +1,7 @@
 version: "3"
 services:
   albiondata-dgate:
+    platform: linux/amd64
     build:
       context: .
     volumes:
@@ -19,7 +20,7 @@ services:
       - 4223:4223
     # # keep the following lines, useful for debugging/development
     # volumes:
-    #   - ./:/usr/src/app
+      # - ./:/usr/src/app
     # entrypoint: 'sleep 999'
   redis:
     image: redis
