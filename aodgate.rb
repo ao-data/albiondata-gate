@@ -38,7 +38,7 @@ class AODGate < Sinatra::Base
   end
 
   def supported_client?(version)
-    version.split(".")
+    version = version&.split("/")[1]&.split(".")
     if version[0] >= 0
       if version[1] >= 1
         if version[2] >= 31
