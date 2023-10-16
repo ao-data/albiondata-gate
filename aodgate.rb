@@ -51,6 +51,9 @@ class AODGate < Sinatra::Base
   end
 
   post '/pow/:topic' do
+    supported_clients = JSON.parse(@redis.get('supported_clients'))
+    halt(905, "Unsupported data client.") unless supported_clients.include?(request.env['HTTP_USER_AGENT'])
+
     halt 404 unless TOPICS.include?(params[:topic])
     pow_json = @redis.get(params[:key])
     @redis.del(params[:key])
