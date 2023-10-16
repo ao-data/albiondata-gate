@@ -37,6 +37,18 @@ class AODGate < Sinatra::Base
     @redis = Redis.new(url: "redis://#{ENV['REDIS_HOST']}:#{ENV['REDIS_PORT']}/#{ENV['REDIS_DB']}")
   end
 
+  def supported_client?(version)
+    version.split(".")
+    if version[0] >= 0
+      if version[1] >= 1
+        if version[2] >= 31
+          return true
+        end
+      end
+    end
+    return false
+  end
+
   use Rack::Throttle::Minute, :max => REQUEST_LIMIT[:per_minute]
   use Rack::Throttle::Hourly, :max => REQUEST_LIMIT[:per_hour]
   use Rack::Throttle::Daily, :max => REQUEST_LIMIT[:per_day]
@@ -51,8 +63,7 @@ class AODGate < Sinatra::Base
   end
 
   post '/pow/:topic' do
-    supported_clients = JSON.parse(@redis.get('supported_clients'))
-    halt(905, "Unsupported data client.") unless supported_clients.include?(request.env['HTTP_USER_AGENT'])
+    halt(905, "Unsupported data client.") unless supported_client?(request.env['HTTP_USER_AGENT'])
 
     halt 404 unless TOPICS.include?(params[:topic])
     pow_json = @redis.get(params[:key])
