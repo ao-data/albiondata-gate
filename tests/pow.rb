@@ -3,7 +3,7 @@ require 'json'
 require 'digest/sha2'
 require 'securerandom'
 
-def run_test(big_tiems = false, marketorders = true, goldprices = false, markethistories = false)
+def run_test(big_tiems = false, marketorders = true, goldprices = false, markethistories = false, supportedclient = true)
   uri = URI.parse(ARGV[0])
   long_test = ARGV[1] || "0"
 
@@ -52,8 +52,9 @@ def run_test(big_tiems = false, marketorders = true, goldprices = false, marketh
     msg = {natsmsg: {"Timescale":0, "#{nats_obj_name}": items}.to_json, 'key': pow['key'], 'solution': solution}
   end
 
+  headers  = {"User-Agent" => (supportedclient == true ? 'albiondata-client/0.1.31' : 'some_other_client')}
   http = Net::HTTP.new(uri.host, uri.port)
-  request = Net::HTTP::Post.new("/pow/#{topic}")
+  request = Net::HTTP::Post.new("/pow/#{topic}", headers)
   request.add_field('Content-Type', 'application/x-www-form-urlencoded; charset=utf-8')
   request.body = URI.encode_www_form(msg)
   response = http.request(request)
@@ -78,6 +79,10 @@ run_test(true, false, false, true)
 # big goldprices
 puts "*Expect 904"
 run_test(true, false, true)
+
+# supported user agents
+puts "*Expect 905"
+run_test(true, false, false, false, false)
 
 #############################################
 # THIS REALLY NEEDS TO BE RSPEC!!!!!!!!!!!! #
