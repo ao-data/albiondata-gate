@@ -51,8 +51,11 @@ class AODGate < Sinatra::Base
   end
 
   post '/pow/:topic' do
-    supported_clients = JSON.parse(@redis.get('supported_clients'))
-    halt(905, "Unsupported data client.") unless supported_clients.include?(request.env['HTTP_USER_AGENT'])
+    supported_clients_json = @redis.get('supported_clients')
+    if supported_clients_json
+      supported_clients = JSON.parse(supported_clients_json)
+      halt(905, "Unsupported data client.") if !supported_clients.empty? && !supported_clients.include?(request.env['HTTP_USER_AGENT'])
+    end
 
     halt 404 unless TOPICS.include?(params[:topic])
     pow_json = @redis.get(params[:key])
@@ -93,8 +96,13 @@ class AODGate < Sinatra::Base
       end
     end
 
-    NATSForwarder.forward(params[:topic], data)
-    LOGGER.info(params.merge({request_ip: request.ip, user_agent: request.env['HTTP_USER_AGENT']}).to_json) if ENV['DEBUG'] == "true"
+    log_params = params.merge({request_ip: request.ip, user_agent: request.env['HTTP_USER_AGENT']})
+    if @redis.sismember('bad_ips', request.ip)
+      LOGGER.info(log_params.merge({bad_ip: true}).to_json) if ENV['DEBUG'] == "true"
+    else
+      NATSForwarder.forward(params[:topic], data)
+      LOGGER.info(log_params.to_json) if ENV['DEBUG'] == "true"
+    end
     $POW_MUTEX.synchronize { $POWS.delete(params[:key]) }
     halt(200, "OK")
   end
