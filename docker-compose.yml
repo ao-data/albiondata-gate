@@ -21,7 +21,7 @@ services:
     # # keep the following lines, useful for debugging/development
     # volumes:
       # - ./:/usr/src/app
-    # entrypoint: 'sleep 999'
+    # entrypoint: 'sleep 9999'
   redis:
     image: redis
     ports:
