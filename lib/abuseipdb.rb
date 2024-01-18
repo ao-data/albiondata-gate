@@ -41,7 +41,7 @@ class Ipdb
 
     # store api rate limit remaining
     rate_limit_remaining = r.raw_response.env.response_headers['x-ratelimit-remaining'].to_i
-    @redis_client.set(API_RATE_LIMIT_REMAINING_KEY, rate_limit_remaining, ex: 10)
+    @redis_client.set(API_RATE_LIMIT_REMAINING_KEY, rate_limit_remaining, ex: 1800)
 
     if score > 10
       # add ip to bad list
