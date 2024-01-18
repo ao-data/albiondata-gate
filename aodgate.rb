@@ -18,6 +18,7 @@ end
 
 require_relative 'lib/nats'
 require_relative 'lib/pow-cache'
+require_relative 'lib/abuseipdb'
 
 NATSForwarder.start
 
@@ -96,12 +97,16 @@ class AODGate < Sinatra::Base
       end
     end
 
+    # check if ip is a known bad ip
+    ipdb = Ipdb.new(@redis)
+    is_ip_good = ipdb.check_ip(request.ip)
+
     log_params = params.merge({request_ip: request.ip, user_agent: request.env['HTTP_USER_AGENT']})
-    if @redis.sismember('bad_ips', request.ip)
-      LOGGER.info(log_params.merge({bad_ip: true}).to_json) if ENV['DEBUG'] == "true"
-    else
+    if is_ip_good == true
       NATSForwarder.forward(params[:topic], data)
       LOGGER.info(log_params.to_json) if ENV['DEBUG'] == "true"
+    else
+      LOGGER.info(log_params.merge({bad_ip: true}).to_json) if ENV['DEBUG'] == "true"
     end
     $POW_MUTEX.synchronize { $POWS.delete(params[:key]) }
     halt(200, "OK")
