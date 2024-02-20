@@ -34,10 +34,19 @@ class Ipdb
     return true if !rate_limit_remaining.nil? && rate_limit_remaining.to_i <= 100
     rate_limit_remaining = rate_limit_remaining.to_i
 
-    # check ip with abuseipdb
-    c = Abuseipdb.client
-    r = c.check.call(ipAddress: ip)
-    score = r.body['data']['abuseConfidenceScore']
+    c = nil
+    r = nil
+    score = 0
+    begin
+      # check ip with abuseipdb
+      c = Abuseipdb.client
+      r = c.check.call(ipAddress: ip)
+      score = r.body['data']['abuseConfidenceScore']
+    rescue StandardError => e
+      pp e
+      # there was an error, assume the ip is ok for now, abuseipdb will be back soon
+      return true
+    end
 
     # store api rate limit remaining
     rate_limit_remaining = r.raw_response.env.response_headers['x-ratelimit-remaining'].to_i
@@ -56,3 +65,4 @@ class Ipdb
     end
   end
 end
+
