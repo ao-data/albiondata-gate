@@ -58,8 +58,8 @@ class Ipdb
 
       return false
     else
-      # cache passed check for 24 hours
-      @redis_client.set("#{CHECKED_IPS_KEY_PREFIX}#{ip}", 1, ex: 86400)
+      # cache passed check for 7 days
+      @redis_client.set("#{CHECKED_IPS_KEY_PREFIX}#{ip}", 1, ex: 86400 * 7)
 
       return true
     end
