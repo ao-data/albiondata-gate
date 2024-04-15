@@ -56,6 +56,7 @@ class AODGate < Sinatra::Base
     if supported_clients_json
       supported_clients = JSON.parse(supported_clients_json)
       if !supported_clients.empty? && !supported_clients.include?(request.env['HTTP_USER_AGENT'])
+        log_params = params.merge({request_ip: request.ip, user_agent: request.env['HTTP_USER_AGENT']})
         LOGGER.info(log_params.to_json) if ENV['DEBUG'] == "true"
         halt(905, "Unsupported data client.")
       end
