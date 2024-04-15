@@ -55,7 +55,10 @@ class AODGate < Sinatra::Base
     supported_clients_json = @redis.get('supported_clients')
     if supported_clients_json
       supported_clients = JSON.parse(supported_clients_json)
-      halt(905, "Unsupported data client.") if !supported_clients.empty? && !supported_clients.include?(request.env['HTTP_USER_AGENT'])
+      if !supported_clients.empty? && !supported_clients.include?(request.env['HTTP_USER_AGENT'])
+        LOGGER.info(log_params.to_json) if ENV['DEBUG'] == "true"
+        halt(905, "Unsupported data client.")
+      end
     end
 
     halt 404 unless TOPICS.include?(params[:topic])
